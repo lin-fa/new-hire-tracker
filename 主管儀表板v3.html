@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>主管儀表板</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f0f0f;--s1:#1a1a1a;--s2:#222;--s3:#2a2a2a;--bd:#333;--t1:#f0f0f0;--t2:#aaa;--t3:#666;--red:#ff5555;--yellow:#f5a623;--green:#4ade80;--blue:#60a5fa;--purple:#c084fc}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--s1);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;gap:12px}
+.logo{font-size:14px;font-weight:700;white-space:nowrap}.logo span{color:var(--yellow)}
+.live{background:#1a2a1a;color:var(--green);font-size:10px;padding:2px 8px;border-radius:8px;font-weight:700}
+.tbr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.upd{font-size:11px;color:var(--t3);white-space:nowrap}
+.rbtn{padding:5px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--t1);font-size:11px;cursor:pointer}
+.layout{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 45px)}
+.sb{background:var(--s1);border-right:1px solid var(--bd);overflow-y:auto;padding:12px 0}
+.main{overflow-y:auto;padding:18px 20px}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--t3);text-transform:uppercase;padding:0 16px;margin:12px 0 8px}
+.hi{padding:9px 14px;display:flex;align-items:center;gap:9px;cursor:pointer;border-radius:8px;margin:0 6px 2px;transition:background .1s}
+.hi:hover{background:var(--s2)}.hi.act{background:var(--s3);outline:1px solid var(--bd)}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.hin{font-size:13px;font-weight:600}.his{font-size:11px;color:var(--t3);margin-top:1px}
+.rdot{width:7px;height:7px;border-radius:50%;margin-left:auto;flex-shrink:0}
+
+/* 指標 */
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.mc{background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:14px}
+.mv{font-size:26px;font-weight:700}.ml{font-size:11px;color:var(--t3);margin-top:3px}
+
+/* 卡片 */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:13px;padding:18px;margin-bottom:14px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ct{font-size:13px;font-weight:600}.cs{font-size:11px;color:var(--t3)}
+
+/* 警報 */
+.alert{background:#1f0a0a;border:1px solid #4a1515;border-radius:11px;padding:12px 15px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-body{font-size:12px;color:#ff9090;line-height:1.6}
+.alert-body strong{color:var(--red);display:block;margin-bottom:2px}
+
+/* 建議框 */
+.advice{background:#0d1f0d;border:1px solid #1a3a1a;border-radius:11px;padding:14px;margin-bottom:14px}
+.adv-title{font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.adv-item{display:flex;gap:10px;margin-bottom:8px;font-size:12px;color:#86efac;line-height:1.6}
+.adv-item:last-child{margin-bottom:0}
+.adv-num{width:20px;height:20px;border-radius:50%;background:#1a3a1a;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* 分數 */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.sc{background:var(--s2);border-radius:9px;padding:11px;text-align:center}
+.sv{font-size:21px;font-weight:700}.sl{font-size:10px;color:var(--t3);margin-top:2px}
+
+/* 進度條 */
+.br{margin:7px 0}
+.bm{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:3px}
+.bb{height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.bf{height:100%;border-radius:3px;transition:width .4s}
+
+/* 標籤 */
+.tl{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.tg{padding:3px 9px;border-radius:7px;font-size:11px}
+.tr{background:#2a0f0f;color:#ff8080}
+.ty{background:#2a1a00;color:#fbbf24}
+.tg2{background:var(--s3);color:var(--t2)}
+.tok{background:#0f2a0f;color:#86efac}
+
+/* 引言 */
+.qb{background:var(--s2);border-left:3px solid var(--yellow);border-radius:0 9px 9px 0;padding:10px 13px;font-size:12px;color:#ccc;line-height:1.7;margin-top:8px}
+.wb{background:#0f1f0f;border:1px solid #1a3a1a;border-radius:9px;padding:10px 13px;font-size:12px;color:#86efac;line-height:1.6;margin-top:8px}
+
+/* 歷史 */
+.hrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.hrow:last-child{border-bottom:none}
+.hday{font-size:11px;font-weight:600;width:44px;flex-shrink:0;color:var(--t2)}
+.hbars{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.hbw{display:flex;flex-direction:column;gap:2px}
+.hbl{font-size:9px;color:var(--t3)}
+.hbb{height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.hbf{height:100%;border-radius:2px}
+.hq{font-size:10px;width:70px;text-align:right;flex-shrink:0}
+
+/* 定點 */
+.cp-card{background:var(--s2);border-radius:9px;padding:12px;margin-bottom:10px}
+.cp-day{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t3);margin-bottom:6px;text-transform:uppercase}
+.cp-item{font-size:12px;color:var(--t2);margin-bottom:4px;display:flex;gap:6px}
+.cp-lbl{color:var(--t3);flex-shrink:0}
+
+.empty{text-align:center;padding:50px 20px;color:var(--t3);font-size:13px;line-height:1.8}
+@media(max-width:680px){.layout{grid-template-columns:1fr;height:auto}.mg{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">新人追蹤 <span>Dashboard</span></div>
+    <div class="live">● LIVE</div>
+  </div>
+  <div class="tbr">
+    <span class="upd" id="upd">載入中…</span>
+    <button class="rbtn" onclick="loadAll()">↻ 重新整理</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sb">
+    <div class="sb-lbl">新人列表</div>
+    <div id="sb-list"><div style="padding:12px;font-size:12px;color:var(--t3)">載入中…</div></div>
+    <div class="sb-lbl" style="margin-top:20px">定點問卷</div>
+    <div id="sb-cp"><div style="padding:12px;font-size:12px;color:var(--t3)">載入中…</div></div>
+  </div>
+  <div class="main" id="main"><div class="empty">← 選擇左側新人查看詳細資料</div></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyB9S6pgUL569LHLAOcB4BLG9G1tC22i7yM",
+  authDomain:"new-hire-tracker-c1072.firebaseapp.com",
+  projectId:"new-hire-tracker-c1072",
+  storageBucket:"new-hire-tracker-c1072.firebasestorage.app",
+  messagingSenderId:"1092234850648",
+  appId:"1:1092234850648:web:434f4f16b55bf495bff52d"
+});
+const db = getFirestore(app);
+window.loadAll = async function(){
+  try{
+    const [daily, cp] = await Promise.all([
+      getDocs(query(collection(db,'daily_checkins'), orderBy('timestamp','desc'))),
+      getDocs(query(collection(db,'checkpoint_surveys'), orderBy('timestamp','desc')))
+    ]);
+    window.renderAll(
+      daily.docs.map(d=>({id:d.id,...d.data()})),
+      cp.docs.map(d=>({id:d.id,...d.data()}))
+    );
+    document.getElementById('upd').textContent='更新於 '+new Date().toLocaleTimeString('zh-TW');
+  }catch(e){
+    document.getElementById('main').innerHTML='<div class="empty">⚠️ 載入失敗<br>'+e.message+'</div>';
+  }
+};
+window.loadAll();
+</script>
+
+<script>
+let allH=[], allCP=[], selName=null;
+
+function avg(arr,k){ const v=arr.filter(r=>r[k]>0).map(r=>r[k]); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
+
+function risk(h){
+  const s=(h.aM+h.aL+h.aC+h.aS)/4;
+  const hasQ=h.records.some(r=>['今天想很多次','已經很認真在考慮'].includes(r.quit));
+  const hasSig=h.records.some(r=>r.signals&&r.signals.length>0);
+  const hasCon=h.records.some(r=>r.conflict==='有，讓我很不舒服');
+  if(h.aS<2||s<2.5||hasQ) return 'high';
+  if(s<3.3||hasSig||hasCon) return 'mid';
+  return 'low';
+}
+
+// ===== 規則型建議引擎 =====
+function genAdvice(h, cpData){
+  const tips=[];
+  const latest=h.records[0]||{};
+
+  // 心情
+  if(h.aM<=2) tips.push({u:'緊急',t:'心情長期偏低（平均'+h.aM.toFixed(1)+'分），今天下班前主動找他談5分鐘，只聽不評判，讓他感受到被看見。'});
+  else if(h.aM<=3) tips.push({u:'關注',t:'心情偏低，本週安排一次一對一，詢問有什麼可以幫他的。'});
+
+  // 壓力
+  if(h.aStress>=4) tips.push({u:'緊急',t:'壓力持續偏高（'+h.aStress.toFixed(1)+'分），確認工作量是否超出負荷，考慮調整班次或增加帶班支援。'});
+  const stressSrc = (latest.stressSrc||[]);
+  if(stressSrc.includes('怕犯錯被罵')) tips.push({u:'關注',t:'新人反映「怕犯錯被罵」，本週多給正向回饋，犯錯時先問情況再說明，避免當眾責備。'});
+  if(stressSrc.includes('動作太慢')) tips.push({u:'行動',t:'新人對自己動作太慢感到壓力，主動告訴他「速度會慢慢來，先求正確」，給他信心。'});
+
+  // 離職念頭
+  const quit=latest.quit||'';
+  if(quit==='已經很認真在考慮') tips.push({u:'緊急',t:'⚠️ 已出現強烈離職念頭！今天就要私下約談，了解主要原因，看是否可以協助改善。'});
+  else if(quit==='今天想很多次') tips.push({u:'緊急',t:'今天多次出現離職念頭，主動關心，不要等他先開口。'});
+  else if(quit==='偶爾閃過') tips.push({u:'關注',t:'偶有離職念頭，本週找機會聊聊他對工作的感受和期待。'});
+
+  // 人際
+  if(h.aC<=2) tips.push({u:'關注',t:'人際融入度低，安排一位資深同事主動帶他，午休或下班時一起走，降低孤立感。'});
+  if(latest.conflict==='有，讓我很不舒服') tips.push({u:'緊急',t:'反映有讓他不舒服的人際互動，需私下詢問具體情況，若有霸凌或不當行為須介入處理。'});
+  if(latest.support==='感覺被忽視') tips.push({u:'關注',t:'新人感覺被忽視，今天起每天開工時主動打招呼、問候，讓他知道你有注意到他。'});
+
+  // 學習
+  if(latest.dare==='很多，但不敢開口') tips.push({u:'行動',t:'有很多不懂的事但不敢問，安排每天10分鐘「問問題時間」讓他知道問問題是安全的。'});
+  if(latest.pace==='完全跟不上') tips.push({u:'關注',t:'完全跟不上工作節奏，檢查訓練流程是否太快，考慮放慢步調或重新從基礎帶起。'});
+
+  // 緊急訊號
+  const sigs=latest.signals||[];
+  if(sigs.includes('身體不舒服')) tips.push({u:'緊急',t:'反映身體不舒服，確認他現在狀況，若需要可讓他休息或提早下班，不要硬撐。'});
+  if(sigs.includes('情緒很崩潰')) tips.push({u:'緊急',t:'情緒崩潰，找個安靜地方讓他緩一緩，不要馬上追問原因，先陪著他。'});
+  if(sigs.includes('被罵或指責')) tips.push({u:'緊急',t:'感覺被罵或指責而委屈，私下了解情況，給予情緒支持，說明公司的處理方式。'});
+  if(sigs.includes('想跟主管談')) tips.push({u:'緊急',t:'主動要求和主管談，今天務必找時間，不要拖延。'});
+
+  // 定點落差
+  const d7=cpData.find(c=>c.day===7&&c.name===h.name);
+  const d14=cpData.find(c=>c.day===14&&c.name===h.name);
+  if(d7?.benefits==='跟說好的不一樣') tips.push({u:'緊急',t:'薪資或班表與當初承諾不符，需儘快確認並說明，否則是最快流失的原因之一。'});
+  if(d7?.gap==='差很多，有點後悔'||d14?.overall==='落差很大') tips.push({u:'關注',t:'工作與期待落差大，直接問他「哪裡跟你想的不一樣」，嘗試看是否有可調整的部分。'});
+
+  // 如果都好
+  if(tips.length===0){
+    tips.push({u:'維持',t:'目前各面向表現良好，持續給予正向回饋，讓他知道你有注意到他的進步。'});
+    tips.push({u:'維持',t:'適時給予更多挑戰，避免因重複性工作感到無聊而流失。'});
+  }
+
+  return tips;
+}
+
+const rL={high:'🔴 高風險',mid:'🟡 需關注',low:'🟢 適應良好'};
+const rC={high:'risk-h',mid:'risk-m',low:'risk-l'};
+const avBg={high:'#3a0f0f',mid:'#2d2000',low:'#0f2a0f'};
+const avCo={high:'#ff5555',mid:'#f5a623',low:'#4ade80'};
+const dotCo={high:'var(--red)',mid:'var(--yellow)',low:'var(--green)'};
+const barCo={high:'var(--red)',mid:'var(--yellow)',low:'var(--green)'};
+const uBg={緊急:'#2a0f0f',關注:'#2a1a00',行動:'#0f1a2a',維持:'#0f2a0f'};
+const uCo={緊急:'#ff8080',關注:'#fbbf24',行動:'var(--blue)',維持:'#86efac'};
+
+function renderAll(daily, cp){
+  allCP=cp;
+  const map={};
+  daily.forEach(d=>{ if(!map[d.name]) map[d.name]=[]; map[d.name].push(d); });
+  allH=Object.entries(map).map(([name,records])=>{
+    const h={name,records,latest:records[0],
+      aM:avg(records,'mood'),aStress:avg(records,'stress'),aC:avg(records,'collab'),aS:avg(records,'stay'),
+      aL:records.filter(r=>r.absorb>0).reduce((a,r,_,arr)=>a+r.absorb/arr.length,0)/20||3,
+      latestDay:records[0]?.day||1};
+    h.risk=risk(h); return h;
+  });
+  allH.sort((a,b)=>({high:0,mid:1,low:2}[a.risk]-{high:0,mid:1,low:2}[b.risk]));
+
+  // 側邊欄
+  const sl=document.getElementById('sb-list');
+  sl.innerHTML=allH.length===0?'<div style="padding:12px;font-size:12px;color:var(--t3)">尚無資料</div>':
+    allH.map(h=>`<div class="hi" id="sb-${h.name}" onclick="show('${h.name}')">
+      <div class="av" style="background:${avBg[h.risk]};color:${avCo[h.risk]}">${h.name.charAt(0)}</div>
+      <div><div class="hin">${h.name}</div><div class="his">第${h.latestDay}天 · ${h.records.length}筆</div></div>
+      <div class="rdot" style="background:${dotCo[h.risk]}"></div>
+    </div>`).join('');
+
+  // 定點問卷側邊欄
+  const cpNames=[...new Set(cp.map(c=>c.name))];
+  const cpl=document.getElementById('sb-cp');
+  cpl.innerHTML=cpNames.length===0?'<div style="padding:12px;font-size:12px;color:var(--t3)">尚無定點問卷</div>':
+    cpNames.map(name=>`<div class="hi" onclick="showCP('${name}')">
+      <div class="av" style="background:#1a1a2a;color:var(--purple)">${name.charAt(0)}</div>
+      <div><div class="hin">${name}</div><div class="his">${cp.filter(c=>c.name===name).map(c=>'Day'+c.day).join(' · ')}</div></div>
+    </div>`).join('');
+
+  // 概覽指標
+  document.getElementById('main').innerHTML=`
+    <div class="mg">
+      <div class="mc"><div class="mv">${allH.length}</div><div class="ml">新人總數</div></div>
+      <div class="mc"><div class="mv" style="color:var(--red)">${allH.filter(h=>h.risk==='high').length}</div><div class="ml">高風險</div></div>
+      <div class="mc"><div class="mv" style="color:var(--yellow)">${allH.filter(h=>h.risk==='mid').length}</div><div class="ml">需關注</div></div>
+      <div class="mc"><div class="mv" style="color:var(--green)">${allH.filter(h=>h.risk==='low').length}</div><div class="ml">適應良好</div></div>
+    </div>
+    <div class="empty" style="padding:30px">← 點選左側新人查看詳細分析與行動建議</div>`;
+
+  if(allH.length>0) show(allH[0].name);
+}
+
+function show(name){
+  selName=name;
+  document.querySelectorAll('.hi').forEach(e=>e.classList.remove('act'));
+  const sb=document.getElementById('sb-'+name); if(sb) sb.classList.add('act');
+  const h=allH.find(x=>x.name===name); if(!h) return;
+  const latest=h.latest||{};
+  const cpData=allCP.filter(c=>c.name===name);
+  const tips=genAdvice(h,allCP);
+  const sigs=latest.signals||[];
+  const sorted=[...h.records].sort((a,b)=>(a.day||0)-(b.day||0));
+
+  // 警報
+  const urgents=tips.filter(t=>t.u==='緊急');
+  const alertHTML=urgents.length>0?`<div class="alert">
+    <div class="alert-icon">🚨</div>
+    <div class="alert-body"><strong>需要立即關注（${urgents.length} 項）</strong>${urgents.map(t=>t.t).join('<br>')}</div>
+  </div>`:'';
+
+  // 建議
+  const advHTML=`<div class="advice">
+    <div class="adv-title">📋 本週主管行動建議</div>
+    ${tips.map((t,i)=>`<div class="adv-item">
+      <div class="adv-num" style="background:${uBg[t.u]};color:${uCo[t.u]}">${i+1}</div>
+      <div><span style="color:${uCo[t.u]};font-weight:600">[${t.u}]</span> ${t.t}</div>
+    </div>`).join('')}
+  </div>`;
+
+  // 歷史趨勢
+  const histHTML=sorted.slice(-7).map(r=>{
+    const qc=r.quit==='已經很認真在考慮'?'<span style="color:var(--red)">⚠️離職</span>':
+      r.quit==='今天想很多次'?'<span style="color:var(--red)">想離職</span>':
+      r.quit==='偶爾閃過'?'<span style="color:var(--yellow)">有念頭</span>':'<span style="color:var(--t3)">穩定</span>';
+    return `<div class="hrow">
+      <div class="hday">第${r.day}天</div>
+      <div class="hbars">${[['mood','心情'],['stress','壓力'],['collab','人際'],['stay','留任']].map(([k,lbl])=>{
+        const v=r[k]||0, pct=v/5*100;
+        const c=k==='stress'?(v>=4?'var(--red)':v>=3?'var(--yellow)':'var(--green)'):(v>=4?'var(--green)':v>=3?'var(--yellow)':'var(--red)');
+        return `<div class="hbw"><div class="hbl">${lbl}</div><div class="hbb"><div class="hbf" style="width:${pct}%;background:${c}"></div></div></div>`;
+      }).join('')}</div>
+      <div class="hq">${qc}</div>
+    </div>`;
+  }).join('');
+
+  // 定點問卷資料
+  const cpHTML=cpData.length>0?cpData.sort((a,b)=>a.day-b.day).map(c=>`
+    <div class="cp-card">
+      <div class="cp-day">Day ${c.day} 定點問卷</div>
+      ${c.day===1?`
+        <div class="cp-item"><span class="cp-lbl">來這裡的原因：</span>${(c.reason||[]).join('、')||'-'}</div>
+        <div class="cp-item"><span class="cp-lbl">最擔心的事：</span>${(c.worry||[]).join('、')||'-'}</div>
+        <div class="cp-item"><span class="cp-lbl">第一印象：</span>${c.impression||'-'}</div>
+      `:''}
+      ${c.day===7?`
+        <div class="cp-item"><span class="cp-lbl">期望落差：</span><span style="color:${c.gap?.includes('後悔')?'var(--red)':c.gap?.includes('差不多')?'var(--green)':'var(--yellow)'}">${c.gap||'-'}</span></div>
+        <div class="cp-item"><span class="cp-lbl">薪福符合：</span><span style="color:${c.benefits==='都符合'?'var(--green)':'var(--red)'}">${c.benefits||'-'}</span></div>
+        <div class="cp-item"><span class="cp-lbl">最大挑戰：</span>${(c.challenge||[]).join('、')||'-'}</div>
+        ${c.surprise?`<div class="cp-item"><span class="cp-lbl">最意外的事：</span>${c.surprise}</div>`:''}
+        ${c.improve?`<div class="cp-item"><span class="cp-lbl">希望改善：</span>${c.improve}</div>`:''}
+      `:''}
+      ${c.day===14?`
+        <div class="cp-item"><span class="cp-lbl">整體評估：</span><span style="color:${c.overall?.includes('落差很大')?'var(--red)':c.overall?.includes('超出')||c.overall?.includes('大致')?'var(--green)':'var(--yellow)'}">${c.overall||'-'}</span></div>
+        <div class="cp-item"><span class="cp-lbl">落差面向：</span>${(c.gapArea||[]).join('、')||'-'}</div>
+        ${c.improve?`<div class="cp-item"><span class="cp-lbl">建議改善：</span>${c.improve}</div>`:''}
+      `:''}
+    </div>`).join(''):'<div style="font-size:12px;color:var(--t3)">尚未填寫定點問卷</div>';
+
+  document.getElementById('main').innerHTML=`
+    ${alertHTML}
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div class="av" style="width:46px;height:46px;font-size:17px;background:${avBg[h.risk]};color:${avCo[h.risk]}">${h.name.charAt(0)}</div>
+        <div>
+          <div style="font-size:18px;font-weight:700">${h.name} <span style="font-size:13px;color:var(--t3)">${latest.role||''}</span></div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">第 ${h.latestDay} 天 · ${h.records.length} 筆回報</div>
+        </div>
+        <div style="margin-left:auto;padding:4px 12px;border-radius:10px;font-size:12px;font-weight:600;background:${avBg[h.risk]};color:${avCo[h.risk]}">${rL[h.risk]}</div>
+      </div>
+      <div class="sg">
+        <div class="sc"><div class="sv" style="color:${h.aM>=4?'var(--green)':h.aM>=3?'var(--yellow)':'var(--red)'}">${h.aM.toFixed(1)}</div><div class="sl">平均心情</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aStress<=2?'var(--green)':h.aStress<=3?'var(--yellow)':'var(--red)'}">${h.aStress.toFixed(1)}</div><div class="sl">壓力程度</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aC>=4?'var(--green)':h.aC>=3?'var(--yellow)':'var(--red)'}">${h.aC.toFixed(1)}</div><div class="sl">人際融入</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aS>=4?'var(--green)':h.aS>=3?'var(--yellow)':'var(--red)'}">${h.aS.toFixed(1)}</div><div class="sl">留任意願</div></div>
+      </div>
+      ${(latest.stressSrc||[]).length>0?`<div style="margin-top:4px"><div style="font-size:11px;color:var(--t3);margin-bottom:5px">壓力來源</div><div class="tl">${(latest.stressSrc||[]).map(t=>`<span class="tg ${t==='沒什麼壓力'?'tok':'ty'}">${t}</span>`).join('')}</div></div>`:''}
+      ${sigs.length>0?`<div style="margin-top:10px"><div style="font-size:11px;color:var(--red);margin-bottom:5px;font-weight:600">🚨 今日緊急訊號</div><div class="tl">${sigs.map(s=>`<span class="tg tr">${s}</span>`).join('')}</div></div>`:''}
+    </div>
+
+    ${advHTML}
+
+    ${latest.msg||latest.win?`<div class="card">
+      <div class="ch"><div class="ct">💬 今日留言</div><div class="cs">第 ${latest.day} 天</div></div>
+      ${latest.msg?`<div class="qb">${latest.msg}</div>`:''}
+      ${latest.win?`<div style="font-size:11px;color:var(--t3);margin-top:10px;margin-bottom:4px">今天做到的事 ✨</div><div class="wb">${latest.win}</div>`:''}
+    </div>`:''}
+
+    <div class="card">
+      <div class="ch"><div class="ct">📈 歷史趨勢</div><div class="cs">最近7天</div></div>
+      ${sorted.length>0?histHTML:'<div style="color:var(--t3);font-size:12px">資料不足</div>'}
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="ct">📌 定點問卷資料</div><div class="cs">Day 1 · 7 · 14</div></div>
+      ${cpHTML}
+    </div>
+  `;
+}
+
+function showCP(name){
+  document.querySelectorAll('.hi').forEach(e=>e.classList.remove('act'));
+  const h=allH.find(x=>x.name===name);
+  if(h) show(name);
+}
+</script>
+</body>
+</html>
