@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入職問卷 | 健·人餐廚</title>
+<style>
+:root{--brand:#C1614A;--dark:#8B3D28;--light:#F5EAE6;--mid:#E8A090;--bg:#FDF7F5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);min-height:100vh;padding-bottom:3rem}
+.hero{padding:2rem 1.25rem 1.5rem;text-align:center;color:#fff}
+.hero h1{font-size:19px;font-weight:700}
+.hero p{font-size:12px;margin-top:5px;color:rgba(255,255,255,.75)}
+.brand-lbl{font-size:12px;letter-spacing:2px;color:rgba(255,255,255,.6);margin-bottom:8px}
+.badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:600;padding:3px 12px;border-radius:10px;margin-bottom:10px;letter-spacing:.5px}
+.d1 .hero{background:linear-gradient(160deg,#6B2A15 0%,var(--dark) 50%,var(--brand) 100%)}
+.d7 .hero{background:linear-gradient(160deg,var(--dark) 0%,var(--brand) 60%,var(--mid) 100%)}
+.d14 .hero{background:linear-gradient(160deg,var(--brand) 0%,var(--mid) 60%,#F2C4B4 100%)}
+.wrap{max-width:520px;margin:0 auto;padding:1.25rem 1rem}
+.slbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--mid);text-transform:uppercase;margin:1.25rem 0 .6rem}
+.card{background:#fff;border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.75rem;box-shadow:0 1px 4px rgba(193,97,74,.07);border:1px solid #f0e5e0}
+.q{margin-bottom:1.1rem}.q:last-child{margin-bottom:0}
+.ql{font-size:13px;font-weight:600;color:#2a1a15;margin-bottom:8px}
+.qs{font-size:12px;color:#aaa;margin-bottom:8px;margin-top:-4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:6px 13px;border-radius:18px;border:1px solid #e5e5e5;background:#fafafa;font-size:13px;color:#555;cursor:pointer;transition:all .15s}
+.tag.on{background:var(--light);color:var(--dark);border-color:var(--mid);font-weight:500}
+.tag.warn.on{background:#fef2f2;color:#b91c1c;border-color:#fca5a5}
+.tag.good.on{background:var(--light);color:var(--dark);border-color:var(--mid)}
+.s5{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.sb{padding:9px 4px;border-radius:9px;border:1.5px solid #eee;background:#fafafa;font-size:17px;cursor:pointer;text-align:center;transition:all .15s}
+.sb .n{font-size:10px;color:#ccc;display:block;margin-top:1px}
+.sb.on{border-color:var(--brand);background:var(--light)}.sb.on .n{color:var(--brand)}
+textarea,input[type=text]{width:100%;padding:9px 11px;border:1.5px solid #eee;border-radius:9px;font-size:13px;background:#fafafa;color:#2a1a15;font-family:inherit;resize:vertical}
+textarea{min-height:68px}
+textarea:focus,input:focus{outline:none;border-color:var(--brand)}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.submit{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--dark),var(--brand));color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:.5rem}
+.submit:disabled{opacity:.4}
+.ok{display:none;text-align:center;padding:3rem 1rem}
+.ok .icon{font-size:52px;margin-bottom:1rem}
+.ok h2{font-size:19px;font-weight:700;color:var(--dark)}
+.ok p{font-size:13px;color:#888;margin-top:8px;line-height:1.7}
+/* 選擇器 */
+.picker-brand{text-align:center;font-size:12px;color:var(--dark);letter-spacing:2px;padding:1.5rem 1rem .25rem;font-weight:500}
+.picker-title{text-align:center;font-size:15px;font-weight:600;color:#2a1a15;padding:.5rem 1rem .25rem}
+.picker-sub{text-align:center;font-size:13px;color:#aaa;padding:0 1rem 1rem}
+.picker{display:flex;gap:10px;margin:.5rem auto 1rem;max-width:520px;padding:0 1rem}
+.pick-btn{flex:1;padding:16px 8px;border-radius:14px;border:2px solid #ecddd9;background:#fff;cursor:pointer;text-align:center;transition:all .15s;box-shadow:0 1px 4px rgba(193,97,74,.07)}
+.pick-btn:hover{border-color:var(--brand)}
+.pick-btn .dnum{font-size:22px;font-weight:700;color:var(--dark)}
+.pick-btn .dsub{font-size:11px;color:#aaa;margin-top:3px}
+.pick-btn.p1{border-color:var(--dark);background:#FDF0EC}
+.pick-btn.p7{border-color:var(--brand);background:var(--light)}
+.pick-btn.p14{border-color:var(--mid);background:#FDF7F5}
+</style>
+</head>
+<body id="app">
+
+<div id="picker-wrap">
+  <div class="picker-brand">健 · 人 餐 廚</div>
+  <div class="picker-title">請選擇你的問卷</div>
+  <div class="picker-sub">依照你今天是入職第幾天來選擇</div>
+  <div class="picker">
+    <div class="pick-btn p1" onclick="show(1)"><div class="dnum">Day 1</div><div class="dsub">入職第一天</div></div>
+    <div class="pick-btn p7" onclick="show(7)"><div class="dnum">Day 7</div><div class="dsub">滿一週</div></div>
+    <div class="pick-btn p14" onclick="show(14)"><div class="dnum">Day 14</div><div class="dsub">滿兩週</div></div>
+  </div>
+</div>
+
+<!-- Day 1 -->
+<div id="f1" style="display:none" class="d1">
+  <div class="hero">
+    <div class="brand-lbl">健 · 人 餐 廚</div>
+    <div class="badge">入職第一天</div>
+    <h1>歡迎加入！先認識一下你 👋</h1>
+    <p>讓主管更了解你的背景和期待</p>
+  </div>
+  <div class="wrap">
+    <div class="name-row">
+      <div><div class="ql" style="margin-bottom:6px">姓名</div><input type="text" id="d1-name" placeholder="你的名字"></div>
+      <div><div class="ql" style="margin-bottom:6px">職位</div><input type="text" id="d1-role" placeholder="例：外場、吧台"></div>
+    </div>
+    <div class="slbl">🎯 入職前的期待</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">你為什麼選擇這份工作？（可多選）</div>
+        <div class="tags" id="d1-reason">
+          <div class="tag" onclick="multi(this)">薪水不錯</div><div class="tag" onclick="multi(this)">時間彈性</div>
+          <div class="tag" onclick="multi(this)">喜歡餐飲業</div><div class="tag" onclick="multi(this)">離家近</div>
+          <div class="tag" onclick="multi(this)">朋友介紹</div><div class="tag" onclick="multi(this)">想累積經驗</div>
+          <div class="tag" onclick="multi(this)">暫時過渡</div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">你最擔心的事情是什麼？</div>
+        <div class="tags" id="d1-worry">
+          <div class="tag" onclick="multi(this)">跟不上速度</div><div class="tag" onclick="multi(this)">跟同事不熟</div>
+          <div class="tag" onclick="multi(this)">記不住東西</div><div class="tag" onclick="multi(this)">怕被罵</div>
+          <div class="tag" onclick="multi(this)">體力不夠</div><div class="tag" onclick="multi(this)">沒什麼擔心</div>
+        </div>
+      </div>
+    </div>
+    <div class="slbl">📋 今天的第一印象</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">今天整體感覺怎麼樣？</div>
+        <div class="s5" id="d1-mood">
+          <div class="sb" onclick="setS('d1-mood',1)">😞<span class="n">很差</span></div>
+          <div class="sb" onclick="setS('d1-mood',2)">😕<span class="n">差</span></div>
+          <div class="sb" onclick="setS('d1-mood',3)">😐<span class="n">普通</span></div>
+          <div class="sb" onclick="setS('d1-mood',4)">😊<span class="n">好</span></div>
+          <div class="sb" onclick="setS('d1-mood',5)">😄<span class="n">很好</span></div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">同事和主管給你的第一印象</div>
+        <div class="tags" id="d1-imp">
+          <div class="tag good" onclick="single('d1-imp',this)">很親切友善</div>
+          <div class="tag" onclick="single('d1-imp',this)">還算OK</div>
+          <div class="tag" onclick="single('d1-imp',this)">有點冷漠</div>
+          <div class="tag warn" onclick="single('d1-imp',this)">讓我不太舒服</div>
+        </div>
+      </div>
+      <div class="q" style="margin-bottom:0">
+        <div class="ql">有什麼想跟主管說的嗎？</div>
+        <textarea id="d1-msg" placeholder="任何想法、期待、或需要特別照顧的事…"></textarea>
+      </div>
+    </div>
+    <button class="submit" id="d1-btn" onclick="sub(1)">送出 Day 1 問卷 →</button>
+  </div>
+</div>
+
+<!-- Day 7 -->
+<div id="f7" style="display:none" class="d7">
+  <div class="hero">
+    <div class="brand-lbl">健 · 人 餐 廚</div>
+    <div class="badge">滿一週 · Day 7</div>
+    <h1>撐過第一週了！辛苦了 💪</h1>
+    <p>說說這一週實際的感受</p>
+  </div>
+  <div class="wrap">
+    <div class="name-row">
+      <div><div class="ql" style="margin-bottom:6px">姓名</div><input type="text" id="d7-name" placeholder="你的名字"></div>
+      <div><div class="ql" style="margin-bottom:6px">職位</div><input type="text" id="d7-role" placeholder="例：外場、吧台"></div>
+    </div>
+    <div class="slbl">🎯 期望 vs 現實</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">這份工作跟你當初想像差多少？</div>
+        <div class="tags" id="d7-gap">
+          <div class="tag good" onclick="single('d7-gap',this)">比想像好</div>
+          <div class="tag" onclick="single('d7-gap',this)">跟想像差不多</div>
+          <div class="tag" onclick="single('d7-gap',this)">比想像辛苦一點</div>
+          <div class="tag warn" onclick="single('d7-gap',this)">差很多，有點後悔</div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">薪水、班表、工作內容有符合當初說的嗎？</div>
+        <div class="tags" id="d7-ben">
+          <div class="tag good" onclick="single('d7-ben',this)">都符合</div>
+          <div class="tag" onclick="single('d7-ben',this)">有小出入</div>
+          <div class="tag warn" onclick="single('d7-ben',this)">跟說好的不一樣</div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">讓你最意外的事情是？</div>
+        <textarea id="d7-sur" placeholder="好的或壞的都寫…"></textarea>
+      </div>
+    </div>
+    <div class="slbl">📊 第一週整體評估</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">這一週整體心情平均</div>
+        <div class="s5" id="d7-mood">
+          <div class="sb" onclick="setS('d7-mood',1)">😞<span class="n">很差</span></div>
+          <div class="sb" onclick="setS('d7-mood',2)">😕<span class="n">差</span></div>
+          <div class="sb" onclick="setS('d7-mood',3)">😐<span class="n">普通</span></div>
+          <div class="sb" onclick="setS('d7-mood',4)">😊<span class="n">好</span></div>
+          <div class="sb" onclick="setS('d7-mood',5)">😄<span class="n">很好</span></div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">第一週最大的挑戰是？</div>
+        <div class="tags" id="d7-chal">
+          <div class="tag" onclick="multi(this)">記不住流程</div><div class="tag" onclick="multi(this)">體力不夠</div>
+          <div class="tag" onclick="multi(this)">跟同事不熟</div><div class="tag" onclick="multi(this)">客人很難搞</div>
+          <div class="tag" onclick="multi(this)">被罵或指責</div><div class="tag" onclick="multi(this)">沒有人帶</div>
+          <div class="tag" onclick="multi(this)">沒什麼挑戰</div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">繼續做下去的意願？</div>
+        <div class="s5" id="d7-stay">
+          <div class="sb" onclick="setS('d7-stay',1)">🚪<span class="n">很想走</span></div>
+          <div class="sb" onclick="setS('d7-stay',2)">😶<span class="n">考慮中</span></div>
+          <div class="sb" onclick="setS('d7-stay',3)">🤔<span class="n">說不定</span></div>
+          <div class="sb" onclick="setS('d7-stay',4)">😊<span class="n">想留</span></div>
+          <div class="sb" onclick="setS('d7-stay',5)">💪<span class="n">很想留</span></div>
+        </div>
+      </div>
+      <div class="q" style="margin-bottom:0">
+        <div class="ql">希望主管幫你改善的一件事</div>
+        <textarea id="d7-imp" placeholder="例：希望有人帶我操作一遍…（可不填）"></textarea>
+      </div>
+    </div>
+    <button class="submit" id="d7-btn" onclick="sub(7)">送出 Day 7 問卷 →</button>
+  </div>
+</div>
+
+<!-- Day 14 -->
+<div id="f14" style="display:none" class="d14">
+  <div class="hero">
+    <div class="brand-lbl">健 · 人 餐 廚</div>
+    <div class="badge">滿兩週 · Day 14</div>
+    <h1>兩週了，說說你的感受 🌟</h1>
+    <p>這份問卷會幫助主管更好地支持你</p>
+  </div>
+  <div class="wrap">
+    <div class="name-row">
+      <div><div class="ql" style="margin-bottom:6px">姓名</div><input type="text" id="d14-name" placeholder="你的名字"></div>
+      <div><div class="ql" style="margin-bottom:6px">職位</div><input type="text" id="d14-role" placeholder="例：外場、吧台"></div>
+    </div>
+    <div class="slbl">🎯 整體落差評估</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">兩週下來，這份工作符合你的期待嗎？</div>
+        <div class="tags" id="d14-ov">
+          <div class="tag good" onclick="single('d14-ov',this)">超出預期</div>
+          <div class="tag good" onclick="single('d14-ov',this)">大致符合</div>
+          <div class="tag" onclick="single('d14-ov',this)">有些落差</div>
+          <div class="tag warn" onclick="single('d14-ov',this)">落差很大</div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">哪個面向落差最大？（可多選）</div>
+        <div class="tags" id="d14-gap">
+          <div class="tag" onclick="multi(this)">工作內容</div><div class="tag" onclick="multi(this)">薪資待遇</div>
+          <div class="tag" onclick="multi(this)">班表安排</div><div class="tag" onclick="multi(this)">工作環境</div>
+          <div class="tag" onclick="multi(this)">同事關係</div><div class="tag" onclick="multi(this)">主管風格</div>
+          <div class="tag good" onclick="multi(this)">沒有落差</div>
+        </div>
+      </div>
+    </div>
+    <div class="slbl">📊 兩週整體評估</div>
+    <div class="card">
+      <div class="q">
+        <div class="ql">對這份工作的整體滿意度</div>
+        <div class="s5" id="d14-sat">
+          <div class="sb" onclick="setS('d14-sat',1)">😞<span class="n">很差</span></div>
+          <div class="sb" onclick="setS('d14-sat',2)">😕<span class="n">差</span></div>
+          <div class="sb" onclick="setS('d14-sat',3)">😐<span class="n">普通</span></div>
+          <div class="sb" onclick="setS('d14-sat',4)">😊<span class="n">好</span></div>
+          <div class="sb" onclick="setS('d14-sat',5)">😄<span class="n">很好</span></div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">繼續做下去的意願？</div>
+        <div class="s5" id="d14-stay">
+          <div class="sb" onclick="setS('d14-stay',1)">🚪<span class="n">很想走</span></div>
+          <div class="sb" onclick="setS('d14-stay',2)">😶<span class="n">考慮中</span></div>
+          <div class="sb" onclick="setS('d14-stay',3)">🤔<span class="n">說不定</span></div>
+          <div class="sb" onclick="setS('d14-stay',4)">😊<span class="n">想留</span></div>
+          <div class="sb" onclick="setS('d14-stay',5)">💪<span class="n">很想留</span></div>
+        </div>
+      </div>
+      <div class="q">
+        <div class="ql">如果可以改善一件事，你希望是什麼？</div>
+        <textarea id="d14-imp" placeholder="對主管、訓練方式、工作環境的建議…"></textarea>
+      </div>
+      <div class="q" style="margin-bottom:0">
+        <div class="ql">給主管的話</div>
+        <textarea id="d14-msg" placeholder="任何想說的都可以…"></textarea>
+      </div>
+    </div>
+    <button class="submit" id="d14-btn" onclick="sub(14)">送出 Day 14 問卷 →</button>
+  </div>
+</div>
+
+<div class="ok" id="ok">
+  <div class="icon">✅</div>
+  <h2>問卷送出成功！</h2>
+  <p>主管會查看你的回應。<br>謝謝你的誠實，繼續加油！💪</p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyB9S6pgUL569LHLAOcB4BLG9G1tC22i7yM",
+  authDomain:"new-hire-tracker-c1072.firebaseapp.com",
+  projectId:"new-hire-tracker-c1072",
+  storageBucket:"new-hire-tracker-c1072.firebasestorage.app",
+  messagingSenderId:"1092234850648",
+  appId:"1:1092234850648:web:434f4f16b55bf495bff52d"
+});
+const db=getFirestore(app);
+window._save=async(col,d)=>await addDoc(collection(db,col),{...d,timestamp:serverTimestamp()});
+</script>
+<script>
+function show(d){document.getElementById('picker-wrap').style.display='none';document.getElementById('f'+d).style.display='block';}
+const sc={};
+function setS(id,v){sc[id]=v;document.querySelectorAll(`#${id} .sb`).forEach((b,i)=>b.classList.toggle('on',i<v));}
+function single(g,el){document.querySelectorAll(`#${g} .tag`).forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function multi(el){el.classList.toggle('on');}
+function getSel(g){return[...document.querySelectorAll(`#${g} .tag.on`)].map(b=>b.textContent.trim());}
+function v(id){return document.getElementById(id)?.value.trim()||'';}
+async function sub(d){
+  const p='d'+d,name=v(p+'-name');
+  if(!name){alert('請輸入姓名');return;}
+  let data={name,role:v(p+'-role'),day:d,formType:'checkpoint'};
+  if(d===1){
+    if(!sc['d1-mood']){alert('請填寫今天感覺');return;}
+    data={...data,mood:sc['d1-mood'],reason:getSel('d1-reason'),worry:getSel('d1-worry'),impression:getSel('d1-imp')[0]||'',msg:v('d1-msg')};
+  }else if(d===7){
+    if(!sc['d7-stay']){alert('請填寫留任意願');return;}
+    data={...data,mood:sc['d7-mood']||0,stay:sc['d7-stay'],gap:getSel('d7-gap')[0]||'',benefits:getSel('d7-ben')[0]||'',challenge:getSel('d7-chal'),surprise:v('d7-sur'),improve:v('d7-imp')};
+  }else if(d===14){
+    if(!sc['d14-stay']){alert('請填寫留任意願');return;}
+    data={...data,satis:sc['d14-sat']||0,stay:sc['d14-stay'],overall:getSel('d14-ov')[0]||'',gapArea:getSel('d14-gap'),improve:v('d14-imp'),msg:v('d14-msg')};
+  }
+  const btn=document.getElementById(p+'-btn');
+  btn.disabled=true;btn.textContent='送出中…';
+  try{
+    await window._save('checkpoint_surveys',data);
+    document.getElementById('f'+d).style.display='none';
+    document.getElementById('ok').style.display='block';
+  }catch(e){
+    alert('送出失敗，請確認網路後再試');
+    btn.disabled=false;btn.textContent=`送出 Day ${d} 問卷 →`;
+  }
+}
+</script>
+</body>
+</html>
