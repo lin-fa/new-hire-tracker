@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>主管儀表板 | 健·人餐廚</title>
+<style>
+:root{
+  --brand:#C1614A;--dark:#8B3D28;--light:#F5EAE6;--mid:#E8A090;
+  --bg:#FDF7F5;--s1:#fff;--s2:#fdf5f3;--s3:#f7ede9;--bd:#ecddd9;
+  --t1:#2a1a15;--t2:#7a5a52;--t3:#b8958a;
+  --red:#dc2626;--rbg:#fef2f2;--rbd:#fecaca;
+  --ybg:#fffbeb;--yco:#92400e;--ybd:#fde68a;
+  --gbg:#f0fdf4;--gco:#166534;--gbd:#bbf7d0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:linear-gradient(135deg,var(--dark) 0%,var(--brand) 100%);position:sticky;top:0;z-index:100;gap:12px}
+.logo{font-size:15px;font-weight:600;color:#fff}
+.logo small{font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-left:6px}
+.live{font-size:11px;color:#fff;opacity:.8;display:flex;align-items:center;gap:4px}
+.live::before{content:'';width:7px;height:7px;border-radius:50%;background:#fff;display:inline-block}
+.tbr{display:flex;align-items:center;gap:8px}
+.upd{font-size:11px;color:rgba(255,255,255,.55)}
+.rbtn{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-size:12px;cursor:pointer;font-family:inherit}
+.rbtn:hover{background:rgba(255,255,255,.25)}
+.xbtn{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);color:#fff;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+.layout{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 52px)}
+.sb{background:var(--s1);border-right:1px solid var(--bd);overflow-y:auto;padding:8px 0}
+.main{overflow-y:auto;padding:20px 24px;background:var(--bg)}
+.sblbl{font-size:10px;font-weight:600;letter-spacing:1px;color:var(--t3);text-transform:uppercase;padding:0 14px;margin:16px 0 6px}
+.hi{padding:8px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px;margin:0 6px 2px;transition:background .1s}
+.hi:hover{background:var(--s2)}.hi.act{background:var(--light);outline:1px solid var(--mid)}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.hn{font-size:13px;font-weight:500;color:var(--t1)}.hs{font-size:11px;color:var(--t3);margin-top:1px}
+.rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.mc{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+.mv{font-size:28px;font-weight:600;line-height:1}.ml{font-size:12px;color:var(--t3);margin-top:5px}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ct{font-size:13px;font-weight:600;color:var(--t1)}.cs{font-size:11px;color:var(--t3)}
+.alert{background:var(--rbg);border:1px solid var(--rbd);border-radius:10px;padding:14px 16px;margin-bottom:14px;display:flex;gap:10px}
+.alert-body{font-size:13px;color:var(--red);line-height:1.7}
+.alert-body strong{font-weight:600;display:block;margin-bottom:3px}
+.advice{background:var(--light);border:1px solid var(--mid);border-radius:10px;padding:16px;margin-bottom:14px}
+.adv-title{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:12px}
+.adv-item{display:flex;gap:10px;margin-bottom:10px;font-size:13px;color:var(--t1);line-height:1.6}
+.adv-item:last-child{margin-bottom:0}
+.abadge{padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px;white-space:nowrap}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.sc{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:12px;text-align:center}
+.sv{font-size:22px;font-weight:600;line-height:1}.sl{font-size:11px;color:var(--t3);margin-top:4px}
+.tl{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tg{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:500}
+.tr{background:var(--rbg);color:var(--red)}
+.ty{background:var(--ybg);color:var(--yco)}
+.tok{background:var(--light);color:var(--dark)}
+.qb{background:var(--s2);border-left:3px solid var(--brand);padding:10px 14px;font-size:13px;color:var(--t1);line-height:1.7;margin-top:8px}
+.wb{background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--dark);line-height:1.6;margin-top:8px}
+.hrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.hrow:last-child{border-bottom:none}
+.hday{font-size:12px;font-weight:500;width:46px;flex-shrink:0;color:var(--t2)}
+.hbars{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hbw{display:flex;flex-direction:column;gap:3px}
+.hbl{font-size:10px;color:var(--t3)}
+.hbb{height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.hbf{height:100%;border-radius:3px}
+.hq{font-size:11px;width:72px;text-align:right;flex-shrink:0}
+.cpcard{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:14px;margin-bottom:10px}
+.cplbl{font-size:10px;font-weight:600;letter-spacing:1px;color:var(--t3);margin-bottom:8px;text-transform:uppercase}
+.cprow{font-size:12px;color:var(--t1);margin-bottom:5px;display:flex;gap:8px}
+.cpkey{color:var(--t3);flex-shrink:0;min-width:70px}
+.div{height:1px;background:var(--bd);margin:14px 0}
+.empty{text-align:center;padding:60px 20px;color:var(--t3);font-size:13px;line-height:2}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:320px;width:90%;text-align:center}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+.cancel-btn{border:1px solid var(--bd);background:var(--s2);color:var(--t2)}
+.del-btn{border:none;background:var(--red);color:#fff;font-weight:600}
+@media(max-width:680px){.layout{grid-template-columns:1fr;height:auto}.mg{grid-template-columns:repeat(2,1fr)}.sg{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- 登入頁 -->
+<div id="login-page" style="min-height:100vh;background:linear-gradient(160deg,var(--dark) 0%,var(--brand) 65%,var(--mid) 100%);display:flex;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:20px;padding:2rem 1.75rem;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(139,61,40,.2)">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:12px;letter-spacing:2px;color:var(--mid);margin-bottom:6px">健 · 人 餐 廚</div>
+      <div style="font-size:18px;font-weight:700;color:var(--dark)">主管儀表板</div>
+      <div style="font-size:13px;color:var(--t3);margin-top:4px">請選擇分店並輸入密碼</div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">選擇分店</div>
+      <select id="login-store" style="width:100%;padding:10px 12px;border:1.5px solid #ecddd9;border-radius:10px;font-size:14px;background:#fafafa;color:var(--t1);font-family:inherit;appearance:none">
+        <option value="">請選擇…</option>
+        <option value="巨蛋店">巨蛋店</option>
+        <option value="中正店">中正店</option>
+        <option value="四維店">四維店</option>
+        <option value="澄清店">澄清店</option>
+        <option value="文自店">文自店</option>
+        <option value="榮總店">榮總店</option>
+        <option value="三多店">三多店</option>
+      </select>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">密碼</div>
+      <input type="password" id="login-pw" placeholder="輸入分店密碼" style="width:100%;padding:10px 12px;border:1.5px solid #ecddd9;border-radius:10px;font-size:14px;background:#fafafa;color:var(--t1);font-family:inherit" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="login-err" style="color:#dc2626;font-size:12px;margin-bottom:12px;display:none;text-align:center">密碼錯誤，請再試一次</div>
+    <button onclick="doLogin()" style="width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--dark),var(--brand));color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">登入</button>
+  </div>
+</div>
+
+<!-- 主儀表板 -->
+<div id="dashboard-page" style="display:none">
+<div class="top">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">健·人餐廚<small id="store-label">新人追蹤系統</small></div>
+    <div class="live">● LIVE</div>
+  </div>
+  <div class="tbr">
+    <span class="upd" id="upd">載入中…</span>
+    <button class="xbtn" onclick="exportCSV()">↓ 匯出</button>
+    <button class="rbtn" onclick="loadAll()">↻ 重新整理</button>
+    <button class="rbtn" onclick="doLogout()">登出</button>
+  </div>
+</div>
+<div class="modal-bg" id="del-modal">
+  <div class="modal">
+    <h3>確認刪除？</h3>
+    <p id="del-msg"></p>
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeModal()">取消</button>
+      <button class="del-btn" onclick="confirmDel()">確認刪除</button>
+    </div>
+  </div>
+</div>
+<div class="layout">
+  <div class="sb">
+    <div class="sblbl">新人列表</div>
+    <div id="sb-list"><div style="padding:12px;font-size:12px;color:var(--t3)">載入中…</div></div>
+  </div>
+  <div class="main" id="main"><div class="empty">← 點選左側新人查看詳細分析</div></div>
+</div>
+</div><!-- end dashboard-page -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, writeBatch, doc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+const app=initializeApp({
+  apiKey:"AIzaSyCl8kl4YW_ohHlhFTKNyQyQ-mZn1G7h9HM",
+  authDomain:"hire-tracker-9e3fc.firebaseapp.com",
+  projectId:"hire-tracker-9e3fc",
+  storageBucket:"hire-tracker-9e3fc.firebasestorage.app",
+  messagingSenderId:"799726433452",
+  appId:"1:799726433452:web:f886d0bb4fc8e027215b09"
+});
+const db=getFirestore(app);
+window._db=db;
+window.loadAll=async function(){
+  try{
+    const daily=await getDocs(query(collection(db,'daily_checkins'),orderBy('timestamp','desc')));
+    window._raw=daily.docs.map(d=>({id:d.id,...d.data()}));
+    window._cp=[];
+    renderAll(window._raw,[]);
+    document.getElementById('upd').textContent='更新於 '+new Date().toLocaleTimeString('zh-TW');
+  }catch(e){document.getElementById('main').innerHTML='<div class="empty">⚠️ 載入失敗<br>'+e.message+'</div>';}
+};
+window.deleteName=async function(name){
+  const all=[...(window._raw||[]).filter(r=>r.name===name),...(window._cp||[]).filter(r=>r.name===name)];
+  for(let i=0;i<all.length;i+=400){
+    const batch=writeBatch(db);
+    all.slice(i,i+400).forEach(r=>batch.delete(doc(db,r.formType==='checkpoint'?'checkpoint_surveys':'daily_checkins',r.id)));
+    await batch.commit();
+  }
+};
+window.loadAll();
+</script>
+<script>
+let allH=[],allCP=[],pendingDel=null,currentStore=null;
+
+// 分店密碼對照表
+const storePW={
+  '巨蛋店':'1111','中正店':'2222','四維店':'3333','澄清店':'4444',
+  '文自店':'5555','榮總店':'6666','三多店':'7777'
+};
+
+function doLogin(){
+  const store=document.getElementById('login-store').value;
+  const pw=document.getElementById('login-pw').value;
+  const err=document.getElementById('login-err');
+  if(!store){err.textContent='請選擇分店';err.style.display='block';return;}
+  if(storePW[store]!==pw){err.style.display='block';return;}
+  err.style.display='none';
+  currentStore=store;
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('dashboard-page').style.display='block';
+  document.getElementById('store-label').textContent=store;
+  loadAll();
+}
+
+function doLogout(){
+  currentStore=null;
+  document.getElementById('dashboard-page').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-store').value='';
+}
+function avg(arr,k){const v=arr.filter(r=>r[k]>0).map(r=>r[k]);return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;}
+function riskOf(h){
+  const s=(h.aM+h.aL+h.aC+h.aS)/4;
+  const hasQ=h.records.some(r=>['今天想很多次','已經很認真在考慮'].includes(r.quit));
+  const hasSig=h.records.some(r=>r.signals&&r.signals.length>0);
+  if(h.aS<2||s<2.5||hasQ)return'high';
+  if(s<3.3||hasSig)return'mid';
+  return'low';
+}
+function genTips(h,cp){
+  const t=[],l=h.latest||{};
+  if(h.aM<=2)t.push({u:'緊急',txt:'心情長期偏低（'+h.aM.toFixed(1)+'分），今天下班前主動找他談5分鐘，只聽不評判。'});
+  else if(h.aM<=3)t.push({u:'關注',txt:'心情偏低，本週安排一次一對一，詢問有什麼可以幫的。'});
+  if(h.aStress>=4)t.push({u:'緊急',txt:'壓力持續偏高（'+h.aStress.toFixed(1)+'分），確認工作量是否超出負荷，考慮調整班次。'});
+  const ss=l.stressSrc||[];
+  if(ss.includes('怕犯錯被罵'))t.push({u:'關注',txt:'反映「怕犯錯被罵」，本週多給正向回饋，犯錯時先問情況再說明，避免當眾責備。'});
+  if(ss.includes('動作太慢'))t.push({u:'行動',txt:'對速度感到壓力，主動告訴他「速度慢慢來，先求正確」，給他信心。'});
+  const q=l.quit||'';
+  if(q==='已經很認真在考慮')t.push({u:'緊急',txt:'已出現強烈離職念頭！今天就私下約談，了解主要原因。'});
+  else if(q==='今天想很多次')t.push({u:'緊急',txt:'今天多次出現離職念頭，主動關心，不要等他先開口。'});
+  else if(q==='偶爾閃過')t.push({u:'關注',txt:'偶有離職念頭，本週找機會聊聊他對工作的感受。'});
+  if(h.aC<=2)t.push({u:'關注',txt:'人際融入度低，安排資深同事主動帶他，降低孤立感。'});
+  if(l.conflict==='有，讓我很不舒服')t.push({u:'緊急',txt:'反映有讓他不舒服的人際互動，需私下詢問具體情況。'});
+  if(l.support==='感覺被忽視')t.push({u:'關注',txt:'感覺被忽視，今天起每天開工時主動打招呼問候。'});
+  if(l.dare==='很多，但不敢開口')t.push({u:'行動',txt:'有很多不懂的事但不敢問，安排每天10分鐘「問問題時間」。'});
+  if(l.pace==='完全跟不上')t.push({u:'關注',txt:'完全跟不上節奏，考慮放慢步調重新帶起。'});
+  const sigs=l.signals||[];
+  if(sigs.includes('身體不舒服'))t.push({u:'緊急',txt:'反映身體不舒服，確認現在狀況，需要可讓他提早下班。'});
+  if(sigs.includes('情緒很崩潰'))t.push({u:'緊急',txt:'情緒崩潰，找安靜地方讓他緩一緩，先陪著他。'});
+  if(sigs.includes('被罵或指責'))t.push({u:'緊急',txt:'感覺委屈，私下了解情況，給予情緒支持。'});
+  if(sigs.includes('想跟主管談'))t.push({u:'緊急',txt:'主動要求和主管談，今天務必找時間。'});
+  const d7=cp.find(c=>c.day===7&&c.name===h.name);
+  if(d7?.benefits==='跟說好的不一樣')t.push({u:'緊急',txt:'薪資或班表與承諾不符，需儘快確認說明。'});
+  if(d7?.gap==='差很多，有點後悔')t.push({u:'關注',txt:'工作與期待落差大，直接問他「哪裡跟你想的不一樣」。'});
+  if(t.length===0){t.push({u:'維持',txt:'目前各面向表現良好，持續給予正向回饋。'});t.push({u:'維持',txt:'適時給予更多挑戰，避免因重複性工作感到無聊。'});}
+  return t;
+}
+const rL={high:'高風險',mid:'需關注',low:'適應良好'};
+const avBg={high:'#fef2f2',mid:'#fffbeb',low:'#F5EAE6'};
+const avCo={high:'#dc2626',mid:'#92400e',low:'#8B3D28'};
+const dotCo={high:'#dc2626',mid:'#f59e0b',low:'#C1614A'};
+const uBg={緊急:'#fef2f2',關注:'#fffbeb',行動:'#eff6ff',維持:'#F5EAE6'};
+const uCo={緊急:'#dc2626',關注:'#92400e',行動:'#1e40af',維持:'#8B3D28'};
+const uBd={緊急:'#fecaca',關注:'#fde68a',行動:'#bfdbfe',維持:'#E8A090'};
+function renderAll(daily,cp){
+  allCP=cp;
+  // 依目前登入分店篩選
+  const filtered=currentStore?daily.filter(d=>d.store===currentStore):daily;
+  const map={};
+  filtered.forEach(d=>{if(!map[d.name])map[d.name]=[];map[d.name].push(d);});
+  allH=Object.entries(map).map(([name,records])=>{
+    const h={name,records,latest:records[0],aM:avg(records,'mood'),aStress:avg(records,'stress'),aC:avg(records,'collab'),aS:avg(records,'stay'),aL:3,latestDay:records[0]?.day||1};
+    h.risk=riskOf(h);return h;
+  });
+  allH.sort((a,b)=>({high:0,mid:1,low:2}[a.risk]-{high:0,mid:1,low:2}[b.risk]));
+  document.getElementById('sb-list').innerHTML=allH.length===0?'<div style="padding:12px;font-size:12px;color:var(--t3)">尚無資料</div>':
+    allH.map(h=>{
+      const latestDate=h.latest?.date||h.latest?.timestamp?.toDate?.().toLocaleDateString('zh-TW')||'';
+      return`<div class="hi" id="sb-${h.name}" onclick="show('${h.name}')">
+      <div class="av" style="background:${avBg[h.risk]};color:${avCo[h.risk]}">${h.name.charAt(0)}</div>
+      <div><div class="hn">${h.name}</div><div class="hs">${latestDate} · ${h.records.length}筆</div></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-left:auto">
+        <div class="rdot" style="background:${dotCo[h.risk]}"></div>
+        <button onclick="event.stopPropagation();openDel('${h.name}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:2px 4px" title="刪除">🗑</button>
+      </div>
+    </div>`;}).join('');
+  document.getElementById('main').innerHTML=`
+    <div class="mg">
+      <div class="mc"><div class="mv">${allH.length}</div><div class="ml">新人總數</div></div>
+      <div class="mc"><div class="mv" style="color:#dc2626">${allH.filter(h=>h.risk==='high').length}</div><div class="ml">高風險</div></div>
+      <div class="mc"><div class="mv" style="color:#92400e">${allH.filter(h=>h.risk==='mid').length}</div><div class="ml">需關注</div></div>
+      <div class="mc"><div class="mv" style="color:var(--brand)">${allH.filter(h=>h.risk==='low').length}</div><div class="ml">適應良好</div></div>
+    </div>
+    <div class="empty">← 點選左側新人查看詳細分析與行動建議</div>`;
+  if(allH.length>0)show(allH[0].name);
+}
+function show(name){
+  document.querySelectorAll('.hi').forEach(e=>e.classList.remove('act'));
+  const sb=document.getElementById('sb-'+name);if(sb)sb.classList.add('act');
+  const h=allH.find(x=>x.name===name);if(!h)return;
+  const l=h.latest||{},tips=genTips(h,[]),sigs=l.signals||[];
+  const sorted=[...h.records].sort((a,b)=>(a.day||0)-(b.day||0));
+  const urgents=tips.filter(t=>t.u==='緊急');
+  const alertHTML=urgents.length?`<div class="alert"><div class="alert-body"><strong>需要立即關注（${urgents.length}項）</strong>${urgents.map(t=>t.txt).join('<br>')}</div></div>`:'';
+  const advHTML=`<div class="advice"><div class="adv-title">本週主管行動建議</div>${tips.map(t=>`<div class="adv-item"><span class="abadge" style="background:${uBg[t.u]};color:${uCo[t.u]};border:1px solid ${uBd[t.u]}">${t.u}</span><span>${t.txt}</span></div>`).join('')}</div>`;
+  const histHTML=sorted.slice(-7).map(r=>{
+    const qc=r.quit==='已經很認真在考慮'?`<span style="color:#dc2626;font-weight:500">考慮離職</span>`:r.quit==='今天想很多次'?`<span style="color:#dc2626">有念頭</span>`:r.quit==='偶爾閃過'?`<span style="color:#92400e">偶爾閃過</span>`:`<span style="color:var(--t3)">穩定</span>`;
+    const rowDate=r.date||'';
+    return `<div class="hrow"><div class="hday" style="width:70px;font-size:11px">${rowDate}</div><div class="hbars">${[['mood','心情'],['stress','壓力'],['collab','人際'],['stay','留任']].map(([k,lb])=>{const v=r[k]||0,p=v/5*100;const c=k==='stress'?(v>=4?'#dc2626':v>=3?'#f59e0b':'#16a34a'):(v>=4?'#16a34a':v>=3?'#f59e0b':'#dc2626');return`<div class="hbw"><div class="hbl">${lb}</div><div class="hbb"><div class="hbf" style="width:${p}%;background:${c}"></div></div></div>`;}).join('')}</div><div class="hq">${qc}</div></div>`;
+  }).join('');
+  const latestDate=l.date||l.timestamp?.toDate?.().toLocaleDateString('zh-TW')||'';
+  document.getElementById('main').innerHTML=`
+    ${alertHTML}
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div class="av" style="width:46px;height:46px;font-size:17px;background:${avBg[h.risk]};color:${avCo[h.risk]}">${h.name.charAt(0)}</div>
+        <div style="flex:1"><div style="font-size:18px;font-weight:600">${h.name} <span style="font-size:13px;color:var(--t3);font-weight:400">${l.role||''}</span></div><div style="font-size:12px;color:var(--t3);margin-top:3px">最新填報：${latestDate} · 共 ${h.records.length} 筆</div></div>
+        <div style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${avBg[h.risk]};color:${avCo[h.risk]};border:1px solid ${avCo[h.risk]}44">${rL[h.risk]}</div>
+      </div>
+      <div class="sg">
+        <div class="sc"><div class="sv" style="color:${h.aM>=4?'#16a34a':h.aM>=3?'#92400e':'#dc2626'}">${h.aM.toFixed(1)}</div><div class="sl">平均心情</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aStress<=2?'#16a34a':h.aStress<=3?'#92400e':'#dc2626'}">${h.aStress.toFixed(1)}</div><div class="sl">壓力程度</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aC>=4?'#16a34a':h.aC>=3?'#92400e':'#dc2626'}">${h.aC.toFixed(1)}</div><div class="sl">人際融入</div></div>
+        <div class="sc"><div class="sv" style="color:${h.aS>=4?'#16a34a':h.aS>=3?'#92400e':'#dc2626'}">${h.aS.toFixed(1)}</div><div class="sl">留任意願</div></div>
+      </div>
+      ${sigs.length>0?`<div class="div"></div><div style="font-size:12px;color:#dc2626;margin-bottom:6px;font-weight:500">今日緊急訊號</div><div class="tl">${sigs.map(s=>`<span class="tg tr">${s}</span>`).join('')}</div>`:''}
+      ${(l.stressSrc||[]).length>0?`<div class="div"></div><div style="font-size:12px;color:var(--t3);margin-bottom:6px">壓力來源</div><div class="tl">${(l.stressSrc||[]).map(t=>`<span class="tg ty">${t}</span>`).join('')}</div>`:''}
+    </div>
+    ${advHTML}
+    ${l.msg||l.win?`<div class="card"><div class="ch"><div class="ct">今日留言</div><div class="cs">${latestDate}</div></div>${l.msg?`<div class="qb">${l.msg}</div>`:''}${l.win?`<div style="font-size:12px;color:var(--t3);margin-top:10px;margin-bottom:4px">今天做到的事</div><div class="wb">${l.win}</div>`:''}</div>`:''}
+    <div class="card"><div class="ch"><div class="ct">歷史趨勢</div><div class="cs">最近 7 天</div></div>${sorted.length>0?histHTML:'<div style="color:var(--t3);font-size:13px;padding:20px 0;text-align:center">資料不足</div>'}</div>`;
+}
+function openDel(name){
+  pendingDel=name;
+  const h=allH.find(x=>x.name===name);
+  document.getElementById('del-msg').textContent=`確定要刪除「${name}」的所有填報紀錄嗎？（共 ${h?h.records.length:0} 筆）此操作無法復原。`;
+  document.getElementById('del-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('del-modal').classList.remove('open');pendingDel=null;}
+async function confirmDel(){if(!pendingDel)return;const name=pendingDel;closeModal();try{await window.deleteName(name);await window.loadAll();}catch(e){alert('刪除失敗：'+e.message);}}
+function exportCSV(){
+  if(!window._raw||!window._raw.length){alert('目前沒有資料');return;}
+  const rows=[['姓名','職位','天數','心情','壓力','人際','留任意願','離職念頭','壓力來源','緊急訊號','留言','時間']];
+  window._raw.forEach(r=>rows.push([r.name||'',r.role||'',r.day||'',r.mood||'',r.stress||'',r.collab||'',r.stay||'',r.quit||'',(r.stressSrc||[]).join('、'),(r.signals||[]).join('、'),r.msg||'',r.timestamp?.toDate?.().toLocaleString('zh-TW')||'']));
+  const csv='\uFEFF'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='新人填報_'+new Date().toLocaleDateString('zh-TW')+'.csv';a.click();
+}
+</script>
+</body>
+</html>
